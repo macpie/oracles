@@ -22,10 +22,18 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: true
     steps:
+      - name: Get Container OS Info
+        id: os_info
+        run: |
+          echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+          echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+
       - name: Free Up Disk Space
         run: |
           echo "Freeing up disk space..."
@@ -49,6 +57,9 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache
+        env:
+          OS_NAME: ${{ env.OS_NAME }}
+          OS_VERSION: ${{ env.OS_VERSION }}
         uses: actions/cache@v4
         with:
           path: |
@@ -57,17 +68,25 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ env.OS_NAME }}-${{ env.OS_VERSION }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Build
         run: cargo build --all --tests 
 
   fmt:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}-fmt
       cancel-in-progress: true
     steps:
+      - name: Get Container OS Info
+        id: os_info
+        run: |
+          echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+          echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -81,10 +100,18 @@ jobs:
 
   clippy:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}-clippy
       cancel-in-progress: true
     steps:
+      - name: Get Container OS Info
+        id: os_info
+        run: |
+          echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+          echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -104,6 +131,8 @@ jobs:
   tests-postgres:
     needs: build
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04
     strategy:
       fail-fast: false
       matrix:
@@ -124,6 +153,12 @@ jobs:
         ports:
             - 5432:5432
     steps:
+      - name: Get Container OS Info
+        id: os_info
+        run: |
+          echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+          echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -136,6 +171,9 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache
+        env:
+          OS_NAME: ${{ env.OS_NAME }}
+          OS_VERSION: ${{ env.OS_VERSION }}
         uses: actions/cache@v4
         with:
           path: |
@@ -144,7 +182,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ env.OS_NAME }}-${{ env.OS_VERSION }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Run unit and integration tests
         env:
@@ -154,6 +192,8 @@ jobs:
   tests:
     needs: build
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04
     strategy:
       fail-fast: false
       matrix:
@@ -162,6 +202,12 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-tests-${{ matrix.package }}
       cancel-in-progress: true
     steps:
+      - name: Get Container OS Info
+        id: os_info
+        run: |
+          echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+          echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -174,6 +220,9 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache
+        env:
+          OS_NAME: ${{ env.OS_NAME }}
+          OS_VERSION: ${{ env.OS_VERSION }}
         uses: actions/cache@v4
         with:
           path: |
@@ -182,7 +231,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ env.OS_NAME }}-${{ env.OS_VERSION }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Run unit and integration tests
         run: cargo test -p ${{ matrix.package }}  -- --include-ignored
@@ -198,6 +247,12 @@ jobs:
     if: > 
       (github.event_name == 'workflow_dispatch') || (contains(github.ref, 'refs/tags/'))
     steps:
+      - name: Get Container OS Info
+        id: os_info
+        run: |
+          echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+          echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+
       - name: Show Inputs
         run: |
           echo "Release Version: ${{ github.event.inputs.release_version }}"
@@ -220,8 +275,10 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # TODO: update key when we retire 20.04
       - name: Cache
+        env:
+          OS_NAME: ${{ env.OS_NAME }}
+          OS_VERSION: ${{ env.OS_VERSION }}
         uses: actions/cache@v4
         with:
           path: |
@@ -230,7 +287,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ubuntu-20.04-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ env.OS_NAME }}-${{ env.OS_VERSION }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Build Release
         run: cargo build --all --release
