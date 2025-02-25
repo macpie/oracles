@@ -10,7 +10,7 @@ on:
     inputs:
       release_version:
         description: "Release Version (e.g., 1.0.0)"
-        required: true
+        required: false
         type: string
 env:
   CARGO_INCREMENTAL: 0 # this setting is automatically applied by rust-cache but documented here for explicitness
@@ -290,7 +290,8 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-build-release
       cancel-in-progress: true
     if: > 
-      (github.event_name == 'workflow_dispatch') || (contains(github.ref, 'refs/tags/'))
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.release_version != '') ||
+      (contains(github.ref, 'refs/tags/'))
     steps:
       - name: Get Container OS Info
         id: os_info
