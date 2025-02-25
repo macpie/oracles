@@ -41,7 +41,7 @@ jobs:
           apt-get install -y tzdata
           ln -fs /usr/share/zoneinfo/UTC /etc/localtime
           dpkg-reconfigure -f noninteractive tzdata
-          apt-get install -y curl build-essential pkg-config libssl-dev unzip
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip clang
 
       # - name: Free Up Disk Space
       #   run: |
@@ -103,7 +103,7 @@ jobs:
           apt-get install -y tzdata
           ln -fs /usr/share/zoneinfo/UTC /etc/localtime
           dpkg-reconfigure -f noninteractive tzdata
-          apt-get install -y curl build-essential pkg-config libssl-dev unzip
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip clang
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -137,7 +137,7 @@ jobs:
           apt-get install -y tzdata
           ln -fs /usr/share/zoneinfo/UTC /etc/localtime
           dpkg-reconfigure -f noninteractive tzdata
-          apt-get install -y curl build-essential pkg-config libssl-dev unzip
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip clang
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -193,7 +193,7 @@ jobs:
           apt-get install -y tzdata
           ln -fs /usr/share/zoneinfo/UTC /etc/localtime
           dpkg-reconfigure -f noninteractive tzdata
-          apt-get install -y curl build-essential pkg-config libssl-dev unzip
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip clang
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -251,7 +251,7 @@ jobs:
           apt-get install -y tzdata
           ln -fs /usr/share/zoneinfo/UTC /etc/localtime
           dpkg-reconfigure -f noninteractive tzdata
-          apt-get install -y curl build-essential pkg-config libssl-dev unzip
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip clang
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -310,7 +310,7 @@ jobs:
           apt-get install -y tzdata
           ln -fs /usr/share/zoneinfo/UTC /etc/localtime
           dpkg-reconfigure -f noninteractive tzdata
-          apt-get install -y curl build-essential pkg-config libssl-dev unzip
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip clang
 
       - uses: actions/checkout@v4
 
