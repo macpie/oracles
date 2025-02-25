@@ -34,16 +34,25 @@ jobs:
           echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
           echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
 
-      - name: Free Up Disk Space
+      - name: Install Dependencies
         run: |
-          echo "Freeing up disk space..."
-          echo "Disk space before cleanup:"
-          df -h
-          sudo apt-get clean
-          sudo rm -rf /usr/local/lib/android /usr/lib/jvm /usr/local/share/boost /opt/hostedtoolcache
-          docker system prune -a -f
-          echo "Disk space after cleanup:"
-          df -h
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y tzdata
+          ln -fs /usr/share/zoneinfo/UTC /etc/localtime
+          dpkg-reconfigure -f noninteractive tzdata
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip
+
+      # - name: Free Up Disk Space
+      #   run: |
+      #     echo "Freeing up disk space..."
+      #     echo "Disk space before cleanup:"
+      #     df -h
+      #     sudo apt-get clean
+      #     sudo rm -rf /usr/local/lib/android /usr/lib/jvm /usr/local/share/boost /opt/hostedtoolcache
+      #     docker system prune -a -f
+      #     echo "Disk space after cleanup:"
+      #     df -h
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -87,6 +96,15 @@ jobs:
           echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
           echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
 
+      - name: Install Dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y tzdata
+          ln -fs /usr/share/zoneinfo/UTC /etc/localtime
+          dpkg-reconfigure -f noninteractive tzdata
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -111,6 +129,15 @@ jobs:
         run: |
           echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
           echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+
+      - name: Install Dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y tzdata
+          ln -fs /usr/share/zoneinfo/UTC /etc/localtime
+          dpkg-reconfigure -f noninteractive tzdata
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -158,6 +185,15 @@ jobs:
         run: |
           echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
           echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+
+      - name: Install Dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y tzdata
+          ln -fs /usr/share/zoneinfo/UTC /etc/localtime
+          dpkg-reconfigure -f noninteractive tzdata
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -207,6 +243,15 @@ jobs:
         run: |
           echo "OS_NAME=$(grep '^ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
           echo "OS_VERSION=$(grep '^VERSION_ID=' /etc/os-release | cut -d '=' -f2 | tr -d '\"')" >> $GITHUB_ENV
+
+      - name: Install Dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y tzdata
+          ln -fs /usr/share/zoneinfo/UTC /etc/localtime
+          dpkg-reconfigure -f noninteractive tzdata
+          apt-get install -y curl build-essential pkg-config libssl-dev unzip
 
       - name: Checkout
         uses: actions/checkout@v4
